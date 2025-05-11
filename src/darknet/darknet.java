@@ -55,7 +55,8 @@ public class darknet {
         };
     }
 
-    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("libdarknet.so", LIBRARY_ARENA)
+    static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup(
+            (System.getProperty("os.name").toLowerCase().contains("linux") ? "libdarknet.so" : "darknet.dll"), LIBRARY_ARENA)
             .or(SymbolLookup.loaderLookup())
             .or(Linker.nativeLinker().defaultLookup());
 
