@@ -1,0 +1,7 @@
+build/
+
+# IDE generated
+.vs
+.vscode
+*.kdev4
+
