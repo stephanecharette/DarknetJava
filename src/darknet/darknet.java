@@ -69,42 +69,6 @@ public class darknet {
     public static final AddressLayout C_POINTER = ValueLayout.ADDRESS
             .withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Long.MAX_VALUE, JAVA_BYTE));
     public static final ValueLayout.OfLong C_LONG = ValueLayout.JAVA_LONG;
-    private static final int DARKNET_WEIGHTS_VERSION_MAJOR = (int)0L;
-    /**
-     * {@snippet lang=c :
-     * #define DARKNET_WEIGHTS_VERSION_MAJOR 0
-     * }
-     */
-    public static int DARKNET_WEIGHTS_VERSION_MAJOR() {
-        return DARKNET_WEIGHTS_VERSION_MAJOR;
-    }
-    private static final int DARKNET_WEIGHTS_VERSION_MINOR = (int)2L;
-    /**
-     * {@snippet lang=c :
-     * #define DARKNET_WEIGHTS_VERSION_MINOR 2
-     * }
-     */
-    public static int DARKNET_WEIGHTS_VERSION_MINOR() {
-        return DARKNET_WEIGHTS_VERSION_MINOR;
-    }
-    private static final int DARKNET_WEIGHTS_VERSION_PATCH = (int)5L;
-    /**
-     * {@snippet lang=c :
-     * #define DARKNET_WEIGHTS_VERSION_PATCH 5
-     * }
-     */
-    public static int DARKNET_WEIGHTS_VERSION_PATCH() {
-        return DARKNET_WEIGHTS_VERSION_PATCH;
-    }
-    private static final int DARKNET_WEIGHTS_VERSION_TWEAK = (int)4L;
-    /**
-     * {@snippet lang=c :
-     * #define DARKNET_WEIGHTS_VERSION_TWEAK 4
-     * }
-     */
-    public static int DARKNET_WEIGHTS_VERSION_TWEAK() {
-        return DARKNET_WEIGHTS_VERSION_TWEAK;
-    }
     private static final int true_ = (int)1L;
     /**
      * {@snippet lang=c :
@@ -2380,54 +2344,6 @@ public class darknet {
         } catch (Throwable ex$) {
            throw new AssertionError("should not reach here", ex$);
         }
-    }
-    /**
-     * {@snippet lang=c :
-     * #define DARKNET_VERSION_STRING "v5.0-6-geb8e4b3f"
-     * }
-     */
-    public static MemorySegment DARKNET_VERSION_STRING() {
-        class Holder {
-            static final MemorySegment DARKNET_VERSION_STRING
-                = darknet.LIBRARY_ARENA.allocateFrom("v5.0-6-geb8e4b3f");
-        }
-        return Holder.DARKNET_VERSION_STRING;
-    }
-    /**
-     * {@snippet lang=c :
-     * #define DARKNET_VERSION_SHORT "5.0.6"
-     * }
-     */
-    public static MemorySegment DARKNET_VERSION_SHORT() {
-        class Holder {
-            static final MemorySegment DARKNET_VERSION_SHORT
-                = darknet.LIBRARY_ARENA.allocateFrom("5.0.6");
-        }
-        return Holder.DARKNET_VERSION_SHORT;
-    }
-    /**
-     * {@snippet lang=c :
-     * #define DARKNET_VERSION_KEYWORD "Moonlit"
-     * }
-     */
-    public static MemorySegment DARKNET_VERSION_KEYWORD() {
-        class Holder {
-            static final MemorySegment DARKNET_VERSION_KEYWORD
-                = darknet.LIBRARY_ARENA.allocateFrom("Moonlit");
-        }
-        return Holder.DARKNET_VERSION_KEYWORD;
-    }
-    /**
-     * {@snippet lang=c :
-     * #define DARKNET_BRANCH_NAME "v5"
-     * }
-     */
-    public static MemorySegment DARKNET_BRANCH_NAME() {
-        class Holder {
-            static final MemorySegment DARKNET_BRANCH_NAME
-                = darknet.LIBRARY_ARENA.allocateFrom("v5");
-        }
-        return Holder.DARKNET_BRANCH_NAME;
     }
 }
 
