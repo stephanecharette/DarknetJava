@@ -6,9 +6,9 @@ The FFM API requires Java 21 or newer.
 
 Example:
 
-    Lorem ipsum dolor sit amet consectetur adipiscing elit.
-    Sit amet consectetur adipiscing elit quisque faucibus ex.
-    Adipiscing elit quisque faucibus ex sapien vitae pellentesque.
+	Lorem ipsum dolor sit amet consectetur adipiscing elit.
+	Sit amet consectetur adipiscing elit quisque faucibus ex.
+	Adipiscing elit quisque faucibus ex sapien vitae pellentesque.
 
 # Installing Darknet/YOLO
 
@@ -23,20 +23,16 @@ Once you've followed the instructions to build _and_ install Darknet/YOLO, confi
 
 # Building
 
-    cd ~/src/
-    git clone https://github.com/stephanecharette/DarknetJava.git
-    cd DarknetJava
-    mkdir build
-    javac -d build/ src/darknet/*.java
-    cd build
-    jar --create --verbose --file=darknet.jar darknet/*.class
-    java --enable-native-access=ALL-UNNAMED Darknet.Main
+	cd ~/src/
+	git clone https://github.com/stephanecharette/DarknetJava.git
+	cd DarknetJava
+	mkdir build
+	javac -d build/ src/darknet/*.java
+	java -cp build --enable-native-access=ALL-UNNAMED Darknet.Main
 
-# Regenerate Java Source
+## JAR File
 
-Download JExtract from https://jdk.java.net/jextract/
+To create the @p .jar file:
 
-    cd openjdk-22-jextract+6-47_linux-x64_bin/jextract-22/bin/
-    ./jextract --define-macro DARKNET_INCLUDE_ORIGINAL_API --define-macro DARKNET_SKIP_VERSION_MACROS --header-class-name darknet --target-package darknet -l :libdarknet.so --output src /usr/include/darknet*.h
-
-If re-generating the .java files, see the modification that was done to SYMBOL_LOOKUP in darknet.java lines 58-59.
+	cd build
+	jar --create --verbose --file=Darknet.jar Darknet/*.class
