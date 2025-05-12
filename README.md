@@ -30,6 +30,7 @@ Once you've followed the instructions to build _and_ install Darknet/YOLO, confi
     javac -d build/ src/darknet/*.java
     cd build
     jar --create --verbose --file=darknet.jar darknet/*.class
+    java --enable-native-access=ALL-UNNAMED Darknet.Main
 
 # Regenerate Java Source
 
