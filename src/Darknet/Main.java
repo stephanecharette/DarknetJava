@@ -36,7 +36,7 @@ public class Main
 				"/home/stephane/nn/LegoGears/LegoGears.names"		,
 				"/home/stephane/nn/LegoGears/LegoGears_best.weights");
 
-//		darknet.free_neural_network(ptr);
+		darknet.free_neural_network(ptr);
 	}
 
 	public static void buildFrame(String path) throws IOException

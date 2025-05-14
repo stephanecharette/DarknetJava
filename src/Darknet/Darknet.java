@@ -129,7 +129,7 @@ public class Darknet
 			MemorySegment fn3 = string_to_memorysegment(weights);
 
 			MemorySegment function = lookup.findOrThrow("darknet_load_neural_network");
-			FunctionDescriptor descriptor = FunctionDescriptor.of(C_POINTER, C_POINTER, C_POINTER, C_POINTER);
+			FunctionDescriptor descriptor = FunctionDescriptor.of(NETWORKPTR, C_POINTER, C_POINTER, C_POINTER);
 			MethodHandle handle = linker.downcallHandle(function, descriptor);
 			ptr = (MemorySegment) handle.invokeExact(fn1, fn2, fn3);
 		}
@@ -140,7 +140,21 @@ public class Darknet
 		return ptr;
 	}
 
-//	public void free_neural_network(Darknet.NETWORKPTR ptr)
-//	{
-//	}
+	public void free_neural_network(MemorySegment ptr)
+	{
+		if (ptr != null)
+		{
+			try
+			{
+				MemorySegment function = lookup.findOrThrow("darknet_free_neural_network");
+				FunctionDescriptor descriptor = FunctionDescriptor.ofVoid(NETWORKPTR);
+				MethodHandle handle = linker.downcallHandle(function, descriptor);
+				handle.invokeExact(ptr);
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 }
