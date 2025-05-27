@@ -80,6 +80,23 @@ public class Darknet
 		return;
 	}
 
+	/// Run a function that takes a string and returns nothing.
+	private void run_str(String name, String str)
+	{
+		try
+		{
+			MemorySegment function = lookup.findOrThrow(name);
+			MethodHandle handle = linker.downcallHandle(function, FunctionDescriptor.ofVoid(C_POINTER));
+			MemorySegment ms = string_to_memorysegment(str);
+			handle.invokeExact(ms);
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
+		return;
+	}
+
 	public MemorySegment string_to_memorysegment(String str)
 	{
 		MemorySegment seg = Arena.global().allocateFrom(str, java.nio.charset.StandardCharsets.UTF_8);
@@ -132,6 +149,8 @@ public class Darknet
 			FunctionDescriptor descriptor = FunctionDescriptor.of(NETWORKPTR, C_POINTER, C_POINTER, C_POINTER);
 			MethodHandle handle = linker.downcallHandle(function, descriptor);
 			ptr = (MemorySegment) handle.invokeExact(fn1, fn2, fn3);
+
+			System.out.format("neural network loaded .. %s%n", ptr);
 		}
 		catch (Throwable e)
 		{
@@ -146,6 +165,8 @@ public class Darknet
 		{
 			try
 			{
+				System.out.format("free network pointer ... %s%n", ptr);
+
 				MemorySegment function = lookup.findOrThrow("darknet_free_neural_network");
 				FunctionDescriptor descriptor = FunctionDescriptor.ofVoid(NETWORKPTR);
 				MethodHandle handle = linker.downcallHandle(function, descriptor);
@@ -156,5 +177,10 @@ public class Darknet
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void set_output_stream(String output_filename)
+	{
+		run_str("darknet_set_output_stream", output_filename);
 	}
 }

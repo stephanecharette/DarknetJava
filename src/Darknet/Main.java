@@ -23,19 +23,42 @@ public class Main
 //		buildFrame(path); //Build JFame to display image
 
 		Darknet darknet = new Darknet();
+
+		// All output from Darknet/YOLO can be sent to a file.
+		// Otherwise, without calling this, output will be sent to the console.
+//		darknet.set_output_stream("darknet_output.txt");
+
+		// Use a blank filename to reset it to the default console output.
+//		darknet.set_output_stream("");
+
+		// Ask Darknet/YOLO to print a few lines with version strings from CUDA, ROCm, OpenCV, and Darknet/YOLO itself.
 		darknet.show_version_info();
 
-		System.out.println(darknet.version_string());
-		System.out.println(darknet.version_short());
+		// The "long" version string includes the git hash, such as "v5.0-23-gfe0f6639".
+		System.out.format("LONG VERSION STRING .... %s%n", darknet.version_string());
 
-		darknet.set_verbose(true);
+		// The "short" version string includes only the major, minor, and patch values, such as "5.0.23".
+		System.out.format("SHORT VERSION STRING ... %s%n", darknet.version_short());
+
+		// Tell Darknet/YOLO to display extended information.
+		darknet.set_verbose(false);
+
+		// Tell Darknet/YOLO to display trace information.  If set to "true", this will also turn on "verbose" output.  This is only meant for debugging.
 		darknet.set_trace(false);
 
+		// Load the specified neural network.  The order in which the 3 required files is given does not matter,
+		// Darknet should figure out from the file size and content which file is the .cfg, .names, and .weights.
 		var ptr = darknet.load_neural_network(
 				"/home/stephane/nn/LegoGears/LegoGears.cfg"			,
 				"/home/stephane/nn/LegoGears/LegoGears.names"		,
 				"/home/stephane/nn/LegoGears/LegoGears_best.weights");
 
+		System.out.format("NEURAL NETWORK PTR ..... %s%n", ptr);
+
+		// ...do Darknet stuff here...
+
+		// Once done with the network, remember to free the neural network pointer.
+		System.out.format("FREE NETWORK POINTER ... %s%n", ptr);
 		darknet.free_neural_network(ptr);
 	}
 
