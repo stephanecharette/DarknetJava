@@ -15,10 +15,17 @@ public class Darknet
 	Linker linker;
 	SymbolLookup lookup;
 
-	/// NETWORKPTR is a Darknet::NetworkPtr, which is an opaque C-style void pointer to a structure internal to Darknet.
-	public static final AddressLayout NETWORKPTR = ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
+	// For a summary of memory layout, downcall handles, and upcall subs, see this SO post:  https://stackoverflow.com/a/79521845/13022
 
-	/// C_POINTER is a generic C-style pointer.
+	/** NETWORKPTR is a Darknet::NetworkPtr, which is an opaque C-style void pointer to a structure internal to Darknet.
+	 * We don't actually care about the content of the pointer.  But we know we'll need to pass this pointer every time
+	 * a call is made into Darknet/YOLO.
+	 */
+	public static final AddressLayout NETWORKPTR = ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(4, ValueLayout.JAVA_BYTE));
+
+	/** C_POINTER is a generic C-style pointer, without knowing how many bytes will be referenced (the length is actually
+	 * set to max "long").
+	 */
 	public static final AddressLayout C_POINTER = ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
 
 	public Darknet()
@@ -50,18 +57,19 @@ public class Darknet
 	/// Run a function that takes no parameters and returns a text string.
 	private String run_s(String name)
 	{
-		MemorySegment result = null;
+		String str = new String();
 		try
 		{
 			MemorySegment function = lookup.findOrThrow(name);
 			MethodHandle handle = linker.downcallHandle(function, FunctionDescriptor.of(ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Long.MAX_VALUE, ValueLayout.JAVA_BYTE))));
-			result = (MemorySegment) handle.invokeExact();
+			MemorySegment result = (MemorySegment) handle.invokeExact();
+			str = result.getString(0);
 		}
 		catch (Throwable e)
 		{
 			e.printStackTrace();
 		}
-		return result.getString(0);
+		return str;
 	}
 
 	/// Run a function that takes a boolean and returns nothing.

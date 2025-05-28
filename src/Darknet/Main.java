@@ -43,15 +43,15 @@ public class Main
 		// Tell Darknet/YOLO to display extended information.
 		darknet.set_verbose(false);
 
-		// Tell Darknet/YOLO to display trace information.  If set to "true", this will also turn on "verbose" output.  This is only meant for debugging.
-		darknet.set_trace(false);
-
 		// Load the specified neural network.  The order in which the 3 required files is given does not matter,
 		// Darknet should figure out from the file size and content which file is the .cfg, .names, and .weights.
 		var ptr = darknet.load_neural_network(
 				"/home/stephane/nn/LegoGears/LegoGears.cfg"			,
 				"/home/stephane/nn/LegoGears/LegoGears.names"		,
 				"/home/stephane/nn/LegoGears/LegoGears_best.weights");
+
+		// Tell Darknet/YOLO to display trace information.  If set to "true", this will also turn on "verbose" output.  This is only meant for debugging.
+		darknet.set_trace(true);
 
 		System.out.format("NEURAL NETWORK PTR ..... %s%n", ptr);
 
@@ -102,9 +102,5 @@ public class Main
 
 			Main imgLoad = new Main();
 //			byte[] resultBytes = imgLoad.proccessImage(rawBytes, ConvertedImgRaster.getWidth(), ConvertedImgRaster.getHeight());
-
-
-
 	}
-
 }
