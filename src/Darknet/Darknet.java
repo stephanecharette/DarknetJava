@@ -9,6 +9,8 @@ import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SymbolLookup;
 import java.lang.foreign.ValueLayout;
 import java.lang.invoke.MethodHandle;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Darknet
 {
@@ -88,6 +90,21 @@ public class Darknet
 		return;
 	}
 
+	private void run_f(String name, float f)
+	{
+		try
+		{
+			MemorySegment function = lookup.findOrThrow(name);
+			MethodHandle handle = linker.downcallHandle(function, FunctionDescriptor.ofVoid(ValueLayout.JAVA_FLOAT));
+			handle.invokeExact(f);
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
+		return;
+	}
+
 	/// Run a function that takes a string and returns nothing.
 	private void run_str(String name, String str)
 	{
@@ -108,6 +125,7 @@ public class Darknet
 	public MemorySegment string_to_memorysegment(String str)
 	{
 		MemorySegment seg = Arena.global().allocateFrom(str, java.nio.charset.StandardCharsets.UTF_8);
+		System.out.format("string %s converted to memory segment: %s%n", str, seg);
 		return seg;
 	}
 
@@ -176,9 +194,13 @@ public class Darknet
 				System.out.format("free network pointer ... %s%n", ptr);
 
 				MemorySegment function = lookup.findOrThrow("darknet_free_neural_network");
-				FunctionDescriptor descriptor = FunctionDescriptor.ofVoid(NETWORKPTR);
+				FunctionDescriptor descriptor = FunctionDescriptor.ofVoid(C_POINTER);
 				MethodHandle handle = linker.downcallHandle(function, descriptor);
+
+				/* How do we correctly pass the pointer to this function?
+				 *
 				handle.invokeExact(ptr);
+				 */
 			}
 			catch (Throwable e)
 			{
@@ -191,4 +213,51 @@ public class Darknet
 	{
 		run_str("darknet_set_output_stream", output_filename);
 	}
+
+	public void set_detection_threshold(MemorySegment ptr, float threshold)
+	{
+		run_f("darknet_set_detection_threshold", threshold);
+	}
+
+	public void set_non_maximal_suppression_threshold(MemorySegment ptr, float threshold)
+	{
+		run_f("darknet_set_non_maximal_suppression_threshold", threshold);
+	}
+
+	public Map<String, Integer> network_dimensions(MemorySegment ptr)
+	{
+		Map<String, Integer> results = new HashMap<>();
+		results.put("width", -1);
+		results.put("height", -1);
+		results.put("channel", -1);
+
+		//	public static final AddressLayout C_POINTER = ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
+
+/*
+
+		try
+		{
+//			MemorySegment width = string_to_memorysegment(config);
+//			MemorySegment fn2 = string_to_memorysegment(names);
+//			MemorySegment fn3 = string_to_memorysegment(weights);
+
+
+
+
+			MemorySegment function = lookup.findOrThrow("darknet_network_dimensions");
+			FunctionDescriptor descriptor = FunctionDescriptor.of(NETWORKPTR, ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Integer.MAX_VALUE, ValueLayout.JAVA_INTEGER)), ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Integer.MAX_VALUE, ValueLayout.JAVA_INTEGER)), ValueLayout.ADDRESS.withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Integer.MAX_VALUE, ValueLayout.JAVA_INTEGER)));
+			MethodHandle handle = linker.downcallHandle(function, descriptor);
+			ptr = (MemorySegment) handle.invokeExact(fn1, fn2, fn3);
+
+			System.out.format("neural network loaded .. %s%n", ptr);
+		}
+		catch (Throwable e)
+		{
+			e.printStackTrace();
+		}
+*/
+
+		return results;
+	}
+
 }

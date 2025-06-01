@@ -52,6 +52,9 @@ public class Main
 
 		// Tell Darknet/YOLO to display trace information.  If set to "true", this will also turn on "verbose" output.  This is only meant for debugging.
 		darknet.set_trace(true);
+		darknet.set_detection_threshold(ptr, 0.2f);
+		darknet.set_non_maximal_suppression_threshold(ptr, 0.45f);
+		darknet.network_dimensions(ptr).forEach((key, value) -> System.out.format("-> network dimensions: %s=%d%n", key, value));
 
 		System.out.format("NEURAL NETWORK PTR ..... %s%n", ptr);
 

@@ -27,7 +27,7 @@ Once you've followed the instructions to build _and_ install Darknet/YOLO, confi
 	git clone https://github.com/stephanecharette/DarknetJava.git
 	cd DarknetJava
 	mkdir build
-	javac -d build/ src/darknet/*.java
+	javac -d build/ src/Darknet/*.java
 	java -cp build --enable-native-access=ALL-UNNAMED Darknet.Main
 
 ## JAR File
