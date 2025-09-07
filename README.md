@@ -13,6 +13,8 @@ wget https://download.oracle.com/java/24/latest/jdk-24_linux-x64_bin.deb
 sudo dpkg -i jdk-24_linux-x64_bin.deb
 javac --version
 javac 24.0.2
+java --version
+java 24.0.2 2025-07-15
 ```
 
 # Installing Darknet/YOLO
