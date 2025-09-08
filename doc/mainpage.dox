@@ -1,0 +1,20 @@
+/** @mainpage
+
+Java bindings for modern Darknet/YOLO.
+
+- Darknet-Java documentation:  https://www.ccoderun.ca/programming/doxygen/darknet_java/
+- Darknet-Java source code repo:  https://codeberg.org/CCodeRun/DarknetJava#java-bindings
+- See the readme in the source code repo for the full instructions.
+
+The suggested Darknet/YOLO repo to use with Darknet-Java is the modern one maintained by Stéphane Charette:  https://codeberg.org/CCodeRun/darknet
+
+See @p Main.java for some example code showing how to use the Darknet-Java bindings.
+
+Several convenient quick links to get started:
+
+- @ref Darknet.Darknet
+- @ref Darknet.Darknet.load_neural_network()
+- @ref Darknet.Darknet.free_neural_network()
+- @ref Darknet.Darknet.version_string()
+
+*/

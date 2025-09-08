@@ -58,3 +58,14 @@ To create the `.jar` file:
 cd build
 jar --create --verbose --file=Darknet.jar Darknet/*.class
 ```
+
+## Doxygen Documentation
+
+The Doxygen-generated pages are available here:  https://www.ccoderun.ca/programming/doxygen/darknet_java/
+
+To generate the Doxygen output:
+
+```sh
+cd build
+doxygen ../doc/Doxyfile
+```

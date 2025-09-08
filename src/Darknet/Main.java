@@ -22,8 +22,6 @@ public class Main
 		// All output from Darknet/YOLO can be sent to a file.
 		// Otherwise, without calling this, output will be sent to the console.
 //		darknet.set_output_stream("darknet_output.txt");
-
-		// Use a blank filename to reset it to the default console output.
 //		darknet.set_output_stream("");
 
 		// Toggle displaying verbose information when running certain Darknet/YOLO API calls.
