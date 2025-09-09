@@ -22,6 +22,7 @@ public class Darknet
 	private static final AddressLayout C_POINTER = ValueLayout.ADDRESS;//.withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Long.MAX_VALUE, ValueLayout.JAVA_BYTE));
 
 
+	private boolean verbose;
 	private Arena arena;
 	private Linker linker;
 	private SymbolLookup lookup;
@@ -35,6 +36,7 @@ public class Darknet
 	public Darknet()
 	{
 		System.loadLibrary("darknet");	// looks for libdarknet.so in Linux or darknet.dll in Windows
+		this.verbose	= false;
 		this.arena		= Arena.ofShared();
 		this.linker		= Linker.nativeLinker();
 		this.lookup		= SymbolLookup.loaderLookup();
@@ -82,8 +84,11 @@ public class Darknet
 		}
 		catch (Throwable e)
 		{
-			System.out.format("Exception caught while running \"%s()\"%n", name);
-			e.printStackTrace();
+			if (verbose)
+			{
+				System.out.format("Exception caught while running \"%s()\"%n", name);
+				e.printStackTrace();
+			}
 			throw e;
 		}
 		return;
@@ -106,8 +111,11 @@ public class Darknet
 		}
 		catch (Throwable e)
 		{
-			System.out.format("Exception caught while running \"%s()\"%n", name);
-			e.printStackTrace();
+			if (verbose)
+			{
+				System.out.format("Exception caught while running \"%s()\"%n", name);
+				e.printStackTrace();
+			}
 			throw e;
 		}
 		return str;
@@ -128,8 +136,66 @@ public class Darknet
 		}
 		catch (Throwable e)
 		{
-			System.out.format("Exception caught while running \"%s(%b)\"%n", name, flag);
-			e.printStackTrace();
+			if (verbose)
+			{
+				System.out.format("Exception caught while running \"%s(%b)\"%n", name, flag);
+				e.printStackTrace();
+			}
+			throw e;
+		}
+		return;
+	}
+
+
+	/** Run a function that takes an integer, and returns nothing.
+	 * An example of that would be @ref Darknet.Darknet.set_gpu_index().
+	 * @since 2025-09-09
+	 */
+	private void set_int(String name, int i) throws Throwable
+	{
+		try
+		{
+			MemorySegment function = lookup.findOrThrow(name);
+			MethodHandle handle = linker.downcallHandle(function, FunctionDescriptor.ofVoid(ValueLayout.JAVA_INT));
+			handle.invokeExact(i);
+		}
+		catch (Throwable e)
+		{
+			if (verbose)
+			{
+				System.out.format("Exception caught while running \"%s(%d)\"%n", name, i);
+				e.printStackTrace();
+			}
+			throw e;
+		}
+		return;
+	}
+
+
+	/** Run a function that takes the network pointer and a bool, and returns nothing.
+	 * An example of that would be @ref Darknet.Darknet­.set_netptr_bool().
+	 * @since 2025-09-09
+	 */
+	private void set_netptr_bool(String name, boolean b) throws Throwable
+	{
+		try
+		{
+			if (networkptr == null)
+			{
+				throw new NullPointerException("network pointer is null (neural network is not loaded?), cannot run \"" + name + "\"");
+			}
+
+			MemorySegment function = lookup.findOrThrow(name);
+			MethodHandle handle = linker.downcallHandle(function, FunctionDescriptor.ofVoid(NETWORKPTR, ValueLayout.JAVA_BOOLEAN));
+			handle.invokeExact(networkptr, b);
+		}
+		catch (Throwable e)
+		{
+			if (verbose)
+			{
+				System.out.format("Exception caught while running \"%s(%s)\"%n", name, (b ? "true" : "false"));
+				e.printStackTrace();
+			}
 			throw e;
 		}
 		return;
@@ -155,8 +221,11 @@ public class Darknet
 		}
 		catch (Throwable e)
 		{
-			System.out.format("Exception caught while running \"%s(%f)\"%n", name, f);
-			e.printStackTrace();
+			if (verbose)
+			{
+				System.out.format("Exception caught while running \"%s(%f)\"%n", name, f);
+				e.printStackTrace();
+			}
 			throw e;
 		}
 		return;
@@ -178,8 +247,11 @@ public class Darknet
 		}
 		catch (Throwable e)
 		{
-			System.out.format("Exception caught while running \"%s(%s)\"%n", name, str);
-			e.printStackTrace();
+			if (verbose)
+			{
+				System.out.format("Exception caught while running \"%s(%s)\"%n", name, str);
+				e.printStackTrace();
+			}
 			throw e;
 		}
 		return;
@@ -241,6 +313,7 @@ public class Darknet
 	 */
 	public void set_verbose(boolean flag) throws Throwable
 	{
+		verbose = flag;
 		set_bool("darknet_set_verbose", flag);
 	}
 
@@ -256,6 +329,10 @@ public class Darknet
 	 */
 	public void set_trace(boolean flag) throws Throwable
 	{
+		if (flag)
+		{
+			verbose = true;
+		}
 		set_bool("darknet_set_trace", flag);
 	}
 
@@ -287,8 +364,11 @@ public class Darknet
 		}
 		catch (Throwable e)
 		{
-			System.out.format("Exception caught while running darknet_load_neural_network(%s)%n", config);
-			e.printStackTrace();
+			if (verbose)
+			{
+				System.out.format("Exception caught while running darknet_load_neural_network(%s)%n", config);
+				e.printStackTrace();
+			}
 			throw e;
 		}
 		return networkptr;
@@ -321,8 +401,11 @@ public class Darknet
 			}
 			catch (Throwable e)
 			{
-				System.out.format("Exception caught while running darknet_free_neural_network()%n");
-				e.printStackTrace();
+				if (verbose)
+				{
+					System.out.format("Exception caught while running darknet_free_neural_network()%n");
+					e.printStackTrace();
+				}
 				throw e;
 			}
 		}
@@ -388,11 +471,44 @@ public class Darknet
 		}
 		catch (Throwable e)
 		{
-			System.out.format("Exception caught while running darknet_network_dimensions()%n");
-			e.printStackTrace();
+			if (verbose)
+			{
+				System.out.format("Exception caught while running darknet_network_dimensions()%n");
+				e.printStackTrace();
+			}
 			throw e;
 		}
 
 		return results;
+	}
+
+
+	/** Set the zero-based GPU index %Darknet should use.
+	 *
+	 * @li If you have a single GPU and Darknet/YOLO was built with support for your GPU, then the only valid value for the
+	 * index will be @p 0 (zero) which is the default.
+	 *
+	 * @li If you have multiple GPUs and Darknet/YOLO was built with support for your GPU, then you may want to select a
+	 * specific GPU to use.  If unspecified, then Darknet/YOLO will default to GPU index #0 (zero), meaning the first GPU.
+	 *
+	 * @li If Darknet/YOLO was built for CPU-only, then you should not call this API, or call it with @p -1.
+	 *
+	 * @note This must be called prior to @ref Darknet.Darknet.load_neural_network().
+	 *
+	 * @since 2025-09-09
+	 */
+	public void set_gpu_index(int idx) throws Throwable
+	{
+		set_int("darknet_set_gpu_index", idx);
+	}
+
+
+	/** Fix out-of-bound values, meaning coordinates, widths, or heights that extend past the edges of images will be
+	 * cropped or adjusted.  Default setting is @p true.
+	 * @since 2025-09-09
+	 */
+	public void fix_out_of_bound_values(boolean toggle) throws Throwable
+	{
+		set_netptr_bool("darknet_fix_out_of_bound_values", toggle);
 	}
 }

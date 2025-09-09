@@ -35,6 +35,9 @@ public class Main
 		// Ask Darknet/YOLO to print a few lines with various important version strings.
 		darknet.show_version_info();
 
+		// See the comments for this API call.  Unless you have multiple GPUs, this call is normally unecessary.
+//		darknet.set_gpu_index(0);
+
 		// Load the specified neural network.  The order in which the 3 required files is given does not matter,
 		// Darknet will figure out from the file size and content which file is the .cfg, .names, and .weights.
 		String home = System.getProperty("user.home");
@@ -45,6 +48,8 @@ public class Main
 				home + "/nn/LegoGears/LegoGears_best.weights");
 
 		System.out.format("%n");
+
+		darknet.fix_out_of_bound_values(true);
 
 		// The "long" version string includes the git hash, such as "v5.0-23-gfe0f6639".
 		System.out.format("LONG VERSION STRING .... %s%n", darknet.version_string());
